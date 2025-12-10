@@ -6,16 +6,90 @@
 #include "lib_poisson1D.h"
 
 void set_GB_operator_colMajor_poisson1D(double* AB, int *lab, int *la, int *kv){
-  // TODO: Fill AB with the tridiagonal Poisson operator
+  
+  // Fill AB with the tridiagonal Poisson operator
+  
+  // pointeur -> variable
+  int n = *la; // Dimension de AB
+  int labv = *lab; // Nombre de colonnes
+  int kv_local = *kv; // Nombre de superdiagonaux
+
+  // Remplir AB pour qu'il soit nulle
+  for(int j=0; j<n; j++){
+    for(int i=0; i<labv; i++){
+
+      AB[j*labv+i] = 0.0;
+
+    }
+  }
+
+  double h = 1.0 / (double)(n+1); // valeur de h
+  double den = 1.0 / (h*h); // denominateur
+
+  // Remplir AB
+  for(int j=0; j<n; j++){
+
+    // diagonale
+    int idx_diag = kv_local + j * labv;
+    AB[idx_diag] = 2.0 * inv_h2;
+
+    // subdiagonale
+    if(j+1 < n){
+
+      int row_sub = kv_local + 1;
+      int idx_sub = row_sub + j * labv;
+      AB[idx_sub] = -1.0 * inv_h2;
+
+    }
+
+    // superdiagonale
+    if(j-1 >= 0){
+
+      int row_sup = kv_local - 1;
+      int idx_sup = row_sup + j * labv;
+      AB[idx_sup] = -1.0 * inv_h2;
+
+    }
+
+  }
+
 }
 
 void set_GB_operator_colMajor_poisson1D_Id(double* AB, int *lab, int *la, int *kv){
-  // TODO: Fill AB with the identity matrix
+
   // Only the main diagonal should have 1, all other entries are 0
+
+  // pointeur -> variable
+  int n = *la; // Dimension de AB
+  int labv = *lab; // Nombre de colonnes
+  int kv_local = *kv; // Nombre de superdiagonaux
+
+  // Remplir AB pour qu'il soit nulle
+  for(int j=0; j<n; j++){
+    for(int i=0; i<labv; i++){
+
+      AB[j*labv+i] = 0.0;
+
+    }
+  }
+
+  // Remplir la diagonale de AB
+  for(int j=0; j<n; j++){
+
+    int row_diag = kv_local;
+    int idx_diag = row_diag + j*labv;
+    AB[idx_diag] = 1.0;
+
+  }
+
 }
 
 void set_dense_RHS_DBC_1D(double* RHS, int* la, double* BC0, double* BC1){
-  // TODO: Compute RHS vector
+  
+  // Compute RHS vector
+  
+
+
 }  
 
 void set_analytical_solution_DBC_1D(double* EX_SOL, double* X, int* la, double* BC0, double* BC1){
