@@ -97,7 +97,7 @@ int main(int argc,char *argv[])
   if (IMPLEM == TRI || IMPLEM == TRF){
     /* Solution (Triangular) - solve using the LU factors */
     if (info==0){
-      dgbtrs_("N", &la, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info);
+      dgbtrs_("N", &la, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info, 1);
       if (info!=0){printf("\n INFO DGBTRS = %d\n",info);}
     }else{
       printf("\n INFO = %d\n",info);
@@ -106,7 +106,13 @@ int main(int argc,char *argv[])
 
   /* Alternative: solve directly using dgbsv */
   if (IMPLEM == SV) {
-    // TODO : use dgbsv
+    
+    // use dgbsv
+
+    dgbsv_(&la, &kl, &ku, &NRHS, AB, &lab, ipiv, RHS, &la, &info);
+
+    if(info != 0) printf("\n INFO DGBSV = %d\n", info);
+
   }
 
   /* Write results to files */
